@@ -1,0 +1,336 @@
+package battleship;
+
+public class ShipArray {
+    protected static String[][] aircraft = new String[11][11];
+    protected static String[][] battleshipp = new String[11][11];
+    protected static String[][] submarine = new String[11][11];
+    protected static String[][] cruiser = new String[11][11];
+    protected static String[][] destroyer = new String[11][11];
+    protected static String[][] aircraftPl1 = new String[11][11];
+    protected static String[][] battleshipPl1 = new String[11][11];
+    protected static String[][] submarinePl1 = new String[11][11];
+    protected static String[][] cruiserPl1 = new String[11][11];
+    protected static String[][] destroyerPl1 = new String[11][11];
+    protected void aircraft() {
+        Battleship.colum = '@';
+        for (int i = 0; i < aircraft.length; i++, Battleship.colum++) {
+            for (int j = 0; j < aircraft[i].length; j++) {
+                if (i == 0 && j == 0) {
+                    aircraft[i][j] = "  ";
+                } else if (i == 0) {
+                    aircraft[i][j] = j + " ";
+                } else if (j == 0) {
+                    aircraft[i][j] = Battleship.colum + " ";
+                } else {
+                    aircraft[i][j] = "~" + " ";
+                }
+            }
+        }
+        if (Battleship.col1 == Battleship.col2) {
+            Battleship.start = Math.min(Battleship.row1, Battleship.row2);
+            Battleship.end = Math.max(Battleship.row1, Battleship.row2);
+            for (int j = Battleship.start; j <= Battleship.end; j++) {
+                aircraft[j][Battleship.col1] = "O" + " ";
+            }
+            if (Battleship.player == Battleship.Player.PLAYER1) {
+                saveAircraft();
+            }
+        } else if (Battleship.row1 == Battleship.row2) {
+            Battleship.start = Math.min(Battleship.col1, Battleship.col2);
+            Battleship.end = Math.max(Battleship.col1, Battleship.col2);
+            for (int j = Battleship.start; j <= Battleship.end; j++) {
+                aircraft[Battleship.row1][j] = "O" + " ";
+            }
+            if (Battleship.player == Battleship.Player.PLAYER1) {
+                saveAircraft();
+            }
+        }
+         //printaircraft();
+        //printAircraftPl1();
+    }
+
+    protected static void saveAircraft() {
+        for (int i = 0; i < aircraftPl1.length; i++) {
+            for (int j = 0; j < aircraftPl1[i].length; j++) {
+                aircraftPl1[i][j] = aircraft[i][j];
+            }
+        }
+    }
+   /* protected static void printAircraftPl1() {
+        System.out.println();
+        System.out.println("aircraftPl1");
+        for (int i = 0; i < aircraftPl1.length; i++) {
+            for (int j = 0; j < aircraftPl1[i].length; j++) {
+                System.out.print(aircraftPl1[i][j]);
+            }
+            System.out.println();
+        }
+    }
+    protected static void printaircraft() {
+        System.out.println();
+        System.out.println("Aircraft");
+        for (int i = 0; i < aircraft.length; i++) {
+            for (int j = 0; j < aircraft[i].length; j++) {
+                System.out.print(aircraft[i][j]);
+            }
+            System.out.println();
+        }
+    } */
+    protected void battleshipp() {
+        Battleship.colum = '@';
+        for (int i = 0; i < battleshipp.length; i++, Battleship.colum++) {
+            for (int j = 0; j < battleshipp[i].length; j++) {
+                if (i == 0 && j == 0) {
+                    battleshipp[i][j] = "  ";
+                } else if (i == 0) {
+                    battleshipp[i][j] = j + " ";
+                } else if (j == 0) {
+                    battleshipp[i][j] = Battleship.colum + " ";
+                } else {
+                    battleshipp[i][j] = "~" + " ";
+                }
+            }
+        }
+        if (Battleship.col1 == Battleship.col2) {
+            Battleship.start = Math.min(Battleship.row1, Battleship.row2);
+            Battleship.end = Math.max(Battleship.row1, Battleship.row2);
+            for (int j = Battleship.start; j <= Battleship.end; j++) {
+                battleshipp[j][Battleship.col1] = "O" + " ";
+            }
+            if (Battleship.player == Battleship.Player.PLAYER1) {
+                saveBattleship();
+            }
+        } else if (Battleship.row1 == Battleship.row2) {
+            Battleship.start = Math.min(Battleship.col1, Battleship.col2);
+            Battleship.end = Math.max(Battleship.col1, Battleship.col2);
+            for (int j = Battleship.start; j <= Battleship.end; j++) {
+                battleshipp[Battleship.row1][j] = "O" + " ";
+            }
+            if (Battleship.player == Battleship.Player.PLAYER1) {
+                saveBattleship();
+            }
+        }
+         //printbattleshipp();
+        //printBattleshipPl1();
+    }
+    protected static void saveBattleship() {
+        for (int i = 0; i < battleshipPl1.length; i++) {
+            for (int j = 0; j < battleshipPl1[i].length; j++) {
+                battleshipPl1[i][j] = battleshipp[i][j];
+            }
+        }
+    }
+    /* protected static void printBattleshipPl1() {
+        System.out.println();
+        System.out.println("BattleshipPL1");
+        for (int i = 0; i < battleshipPl1.length; i++) {
+            for (int j = 0; j < battleshipPl1[i].length; j++) {
+                System.out.print(battleshipPl1[i][j]);
+            }
+            System.out.println();
+        }
+    }
+     protected static void printbattleshipp() {
+         System.out.println();
+         System.out.println("Battleshipp");
+         for (int i = 0; i < battleshipp.length; i++) {
+             for (int j = 0; j < battleshipp[i].length; j++) {
+                 System.out.print(battleshipp[i][j]);
+             }
+             System.out.println();
+         }
+     } */
+
+    protected void submarine() {
+        Battleship.colum = '@';
+        for (int i = 0; i < submarine.length; i++, Battleship.colum++) {
+            for (int j = 0; j < submarine[i].length; j++) {
+                if (i == 0 && j == 0) {
+                    submarine[i][j] = "  ";
+                } else if (i == 0) {
+                    submarine[i][j] = j + " ";
+                } else if (j == 0) {
+                    submarine[i][j] = Battleship.colum + " ";
+                } else {
+                    submarine[i][j] = "~" + " ";
+                }
+            }
+        }
+        if (Battleship.col1 == Battleship.col2) {
+            Battleship.start = Math.min(Battleship.row1, Battleship.row2);
+            Battleship.end = Math.max(Battleship.row1, Battleship.row2);
+            for (int j = Battleship.start; j <= Battleship.end; j++) {
+                submarine[j][Battleship.col1] = "O" + " ";
+            }
+            if (Battleship.player == Battleship.Player.PLAYER1) {
+                saveSubmarine();
+            }
+        } else if (Battleship.row1 == Battleship.row2) {
+            Battleship.start = Math.min(Battleship.col1, Battleship.col2);
+            Battleship.end = Math.max(Battleship.col1, Battleship.col2);
+            for (int j = Battleship.start; j <= Battleship.end; j++) {
+                submarine[Battleship.row1][j] = "O" + " ";
+            }
+            if (Battleship.player == Battleship.Player.PLAYER1) {
+                saveSubmarine();
+            }
+        }
+        //printSubmarine();
+        //printSubmarinePl1();
+    }
+    protected static void saveSubmarine() {
+        for (int i = 0; i < submarinePl1.length; i++) {
+            for (int j = 0; j < submarinePl1[i].length; j++) {
+                submarinePl1[i][j] = submarine[i][j];
+            }
+        }
+    }
+    /* protected static void printSubmarinePl1() {
+        System.out.println();
+        System.out.println("SubmarinePL1");
+        for (int i = 0; i < submarinePl1.length; i++) {
+            for (int j = 0; j < submarinePl1[i].length; j++) {
+                System.out.print(submarinePl1[i][j]);
+            }
+            System.out.println();
+        }
+    }
+    static void printSubmarine() {
+        System.out.println();
+        System.out.println("Submarine");
+        for (int i = 0; i < submarine.length; i++) {
+            for (int j = 0; j < submarine[i].length; j++) {
+                System.out.print(submarine[i][j]);
+            }
+            System.out.println();
+        }
+    } */
+    protected void cruiser() {
+        Battleship.colum = '@';
+        for (int i = 0; i < cruiser.length; i++, Battleship.colum++) {
+            for (int j = 0; j < cruiser[i].length; j++) {
+                if (i == 0 && j == 0) {
+                    cruiser[i][j] = "  ";
+                } else if (i == 0) {
+                    cruiser[i][j] = j + " ";
+                } else if (j == 0) {
+                    cruiser[i][j] = Battleship.colum + " ";
+                } else {
+                    cruiser[i][j] = "~" + " ";
+                }
+            }
+        }
+        if (Battleship.col1 == Battleship.col2) {
+            Battleship.start = Math.min(Battleship.row1, Battleship.row2);
+            Battleship.end = Math.max(Battleship.row1, Battleship.row2);
+            for (int j = Battleship.start; j <= Battleship.end; j++) {
+                cruiser[j][Battleship.col1] = "O" + " ";
+            }
+            if (Battleship.player == Battleship.Player.PLAYER1) {
+                saveCruiser();
+            }
+        } else if (Battleship.row1 == Battleship.row2) {
+            Battleship.start = Math.min(Battleship.col1, Battleship.col2);
+            Battleship.end = Math.max(Battleship.col1, Battleship.col2);
+            for (int j = Battleship.start; j <= Battleship.end; j++) {
+                cruiser[Battleship.row1][j] = "O" + " ";
+            }
+            if (Battleship.player == Battleship.Player.PLAYER1) {
+                saveCruiser();
+            }
+        }
+        //printCruiser();
+        //printCruiserPl1();
+    }
+    protected static void saveCruiser() {
+        for (int i = 0; i < cruiserPl1.length; i++) {
+            for (int j = 0; j < cruiserPl1[i].length; j++) {
+                cruiserPl1[i][j] = cruiser[i][j];
+            }
+        }
+    }
+    /* protected static void printCruiserPl1() {
+        System.out.println();
+        System.out.println("CruiserPL1");
+        for (int i = 0; i < cruiserPl1.length; i++) {
+            for (int j = 0; j < cruiserPl1[i].length; j++) {
+                System.out.print(cruiserPl1[i][j]);
+            }
+            System.out.println();
+        }
+    }
+    static void printCruiser() {
+        System.out.println();
+        System.out.println("Cruiser");
+        for (int i = 0; i < cruiser.length; i++) {
+            for (int j = 0; j < cruiser[i].length; j++) {
+                System.out.print(cruiser[i][j]);
+            }
+            System.out.println();
+        }
+    } */
+    protected void destroyer() {
+        Battleship.colum = '@';
+        for (int i = 0; i < destroyer.length; i++, Battleship.colum++) {
+            for (int j = 0; j < destroyer[i].length; j++) {
+                if (i == 0 && j == 0) {
+                    destroyer[i][j] = "  ";
+                } else if (i == 0) {
+                    destroyer[i][j] = j + " ";
+                } else if (j == 0) {
+                    destroyer[i][j] = Battleship.colum + " ";
+                } else {
+                    destroyer[i][j] = "~" + " ";
+                }
+            }
+        }
+        if (Battleship.col1 == Battleship.col2) {
+            Battleship.start = Math.min(Battleship.row1, Battleship.row2);
+            Battleship.end = Math.max(Battleship.row1, Battleship.row2);
+            for (int j = Battleship.start; j <= Battleship.end; j++) {
+                destroyer[j][Battleship.col1] = "O" + " ";
+            }
+            if (Battleship.player == Battleship.Player.PLAYER1) {
+                saveDestroyer();
+            }
+        } else if (Battleship.row1 == Battleship.row2) {
+            Battleship.start = Math.min(Battleship.col1, Battleship.col2);
+            Battleship.end = Math.max(Battleship.col1, Battleship.col2);
+            for (int j = Battleship.start; j <= Battleship.end; j++) {
+                destroyer[Battleship.row1][j] = "O" + " ";
+            }
+            if (Battleship.player == Battleship.Player.PLAYER1) {
+                saveDestroyer();
+            }
+        }
+        //printDestroyer();
+        //printDestroyerPL1();
+    }
+    protected static void saveDestroyer() {
+        for (int i = 0; i < destroyerPl1.length; i++) {
+            for (int j = 0; j < destroyerPl1[i].length; j++) {
+                destroyerPl1[i][j] = destroyer[i][j];
+            }
+        }
+    }
+    /* protected static void printDestroyerPL1() {
+        System.out.println();
+        System.out.println("DestroyerPL1");
+        for (int i = 0; i < destroyerPl1.length; i++) {
+            for (int j = 0; j < destroyerPl1[i].length; j++) {
+                System.out.print(destroyerPl1[i][j]);
+            }
+            System.out.println();
+        }
+    }
+   protected static void printDestroyer() {
+        System.out.println();
+        System.out.println("Destroyer");
+        for (int i = 0; i < destroyer.length; i++) {
+            for (int j = 0; j < destroyer[i].length; j++) {
+                System.out.print(destroyer[i][j]);
+            }
+            System.out.println();
+        }
+    } */
+}
