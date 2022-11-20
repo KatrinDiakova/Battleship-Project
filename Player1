@@ -1,0 +1,33 @@
+package battleship;
+
+class Player1 extends Battleship {
+
+    protected static String[][] arrayPl1 = new String[11][11];
+    protected static void start() {
+        System.out.println("Player 1, place your ships on the game field");
+        createBattleship();
+        printBattleship();
+        arrangeShips();
+    }
+    protected static void saveField() {
+        for (int i = 0; i < array.length; i++) {
+            for (int j = 0; j < array[i].length; j++) {
+                arrayPl1[i][j] = array[i][j];
+            }
+        }
+    }
+    protected static void printFieldPl1() {
+        System.out.println();
+        for (int i = 0; i < arrayPl1.length; i++) {
+            for (int j = 0; j < arrayPl1[i].length; j++) {
+                if (arrayPl1[i][j].equals("O" + " ") && hide) {
+                    System.out.print("~" + " ");
+                } else {
+                    System.out.print(arrayPl1[i][j]);
+                }
+            }
+            System.out.println();
+        }
+    }
+}
+
