@@ -1,0 +1,269 @@
+package battleship;
+
+import java.util.Scanner;
+
+public class Battleship {
+    protected static Scanner scanner = new Scanner(System.in);
+    protected static String[][] array = new String[11][11];
+    protected static char colum = '@';
+    protected static int row1, row2, col1, col2, start, end;
+    protected static ShipType shipType;
+    private static boolean coordAccepted = false;
+    protected static boolean hide = false;
+    public static Game game = new Game();
+    protected static Player player = Player.PLAYER1;
+    enum Player {
+        PLAYER1, PLAYER2
+    }
+    protected static void createBattleship() {
+        colum = '@';
+        for (int i = 0; i < array.length; i++, colum++) {
+            for (int j = 0; j < array[i].length; j++) {
+                if (i == 0 && j == 0) {
+                    array[i][j] = "  ";
+                } else if (i == 0) {
+                    array[i][j] = j + " ";
+                } else if (j == 0) {
+                    array[i][j] = colum + " ";
+                } else {
+                    array[i][j] = "~" + " ";
+                }
+            }
+        }
+    }
+    protected static void printBattleship() {
+        System.out.println();
+        for (int i = 0; i < array.length; i++) {
+            for (int j = 0; j < array[i].length; j++) {
+                if (array[i][j].equals("O" + " ") && hide) {
+                    System.out.print("~" + " ");
+                } else {
+                    System.out.print(array[i][j]);
+                }
+            }
+            System.out.println();
+        }
+    }
+    protected static void arrangeShips() {
+        for (ShipType ship : ShipType.values()) {
+            enterShips(ship);
+        }
+    }
+    private static void enterShips(ShipType ship) {
+        coordAccepted = false;
+        shipType = ship;
+        System.out.printf("\nEnter the coordinates of the %s (%d cells): %n", shipType.getName(), shipType.getSize());
+        while (!coordAccepted) {
+            String coordinates = scanner.nextLine();
+            String[] location = coordinates.trim().split("\\s+");
+            check(location);
+        }
+    }
+    private static void addShip() {
+        if (col1 == col2) {
+            start = Math.min(row1, row2);
+            end = Math.max(row1, row2);
+            for (int j = start; j <= end; j++) {
+                array[j][col1] = "O" + " ";
+            }
+            typeOfShip();
+
+        } else if (row1 == row2) {
+            start = Math.min(col1, col2);
+            end = Math.max(col1, col2);
+            for (int j = start; j <= end; j++) {
+                array[row1][j] = "O" + " ";
+            }
+            typeOfShip();
+        }
+    }
+    private static void check(String[] location) {
+        row1 = location[0].charAt(0) - 64; // A B C D E F G H I J
+        col1 = Integer.parseInt(location[0].substring(1)); // 1 2 3 4 5 6 7 8 9 10
+        row2 = location[1].charAt(0) - 64; // A B C D E F G H I J
+        col2 = Integer.parseInt(location[1].substring(1)); // 1 2 3 4 5 6 7 8 9 10
+
+        if (checkLocation()) {
+            System.out.println("Error! Wrong ship location! Try again:");
+        } else if (checkSize()) {
+            System.out.println("Error! Wrong length of the " + shipType.getName() +"! Try again:");
+        } else if (checkPlace()) {
+            System.out.println("Error! You placed it too close to another one. Try again:");
+        } else {
+            addShip();
+            coordAccepted = true;
+            printBattleship();
+            if (player == Player.PLAYER2 && shipType.getSize() == 2) {
+                player = Player.PLAYER1;
+                System.out.println("\nPress Enter and pass the move to another player");
+                scanner.nextLine();
+                game.start();
+            } else if (shipType.getSize() == 2) {
+                Player1.saveField();
+                player = Player.PLAYER2;
+                System.out.println("\nPress Enter and pass the move to another player");
+                scanner.nextLine();
+                Player2.start();
+            }
+        }
+    }
+    private static boolean checkLocation() {
+        return row1 != row2 && col1 != col2 || row1 < 0 || row1 > 11 || col1 < 0 || col1 > 11 || row2 < 0 ||
+                row2 > 11 || col2 < 0 || col2 > 11;
+    }
+    private static boolean checkSize() {
+        if (row1 == row2) {
+            return Math.abs(col1 - col2) + 1 != shipType.getSize();
+        } else if ( col1 == col2) {
+            return Math.abs(row1 - row2) + 1 != shipType.getSize();
+        }
+        return false;
+    }
+    private static boolean checkPlace() {
+        if (ShipToClose()) {
+            return true;
+        }
+        return false;
+    }
+    private static boolean ShipToClose() {
+        int result = 0;
+        if (col1 == col2) {
+            start = Math.min(row1, row2);
+            end = Math.max(row1, row2);
+            if (col1 == array.length - 1 && end == array.length - 1) {
+                for (int i = col1 - 1; i <= col1; i++) {
+                    for (int j = start - 1; j <= end; j++) {
+                        if (array[j][i].equals("O" + " ")) {
+                            result++;
+                        }
+                    }
+                }
+            } else if (col1 == array.length - 1) {
+                for (int i = col1 - 1; i <= col1; i++) {
+                    for (int j = start - 1; j <= end + 1; j++) {
+                        if (array[j][i].equals("O" + " ")) {
+                            result++;
+                        }
+                    }
+                }
+            } else if (end == array.length - 1) {
+                for (int i = col1 - 1; i <= col1; i++) {
+                    for (int j = start - 1; j <= end; j++) {
+                        if (array[j][i].equals("O" + " ")) {
+                            result++;
+                        }
+                    }
+                }
+            } else if (Math.min(row1, row2) == 1 && col1 == array.length - 1) {
+                for (int i = col1 - 1; i <= col1; i++) {
+                    for (int j = start - 1; j <= end + 1; j++) {
+                        if (array[j][i].equals("O" + " ")) {
+                            result++;
+                        }
+                    }
+                }
+            } else if (row1 == 1) {
+                for (int i = col1 - 1; i <= col1 + 1; i++) {
+                    for (int j = start - 1; j <= end + 1; j++) {
+                        if (array[j][i].equals("O" + " ")) {
+                            result++;
+                        }
+                    }
+                }
+            } else {
+                for (int i = col1 - 1; i <= col1 + 1; i++) {
+                    for (int j = start - 1; j <= end + 1; j++) {
+                        if (array[j][i].equals("O" + " ")) {
+                            result++;
+                        }
+                    }
+                }
+            }
+        } else if (row1 == array.length - 1 && Math.max(col1, col2) == array.length - 1) {
+            for (int i = Math.min(col1, col2) - 1; i <= Math.max(col1, col2); i++) {
+                for (int j = row1 - 1; j <= row1; j++) {
+                    if (array[j][i].equals("O" + " ")) {
+                        result++;
+                    }
+                }
+            }
+        } else if (row1 == array.length - 1) {
+            for (int i = Math.min(col1, col2) - 1; i <= Math.max(col1, col2) + 1; i++) {
+                for (int j = row1 - 1; j <= row1; j++) {
+                    if (array[j][i].equals("O" + " ")) {
+                        result++;
+                    }
+                }
+            }
+        } else if (Math.max(col1, col2) == array.length - 1) {
+            for (int i = Math.min(col1, col2) - 1; i <= Math.max(col1, col2); i++) {
+                for (int j = row1 - 1; j <= row1 + 1; j++) {
+                    if (array[j][i].equals("O" + " ")) {
+                        result++;
+                    }
+                }
+            }
+        } else if (Math.min(col1, col2) == 1) {
+            for (int i = 0; i <= Math.max(col1, col2) + 1 ; i++) {
+                for (int j = row1 - 1 ; j <= row1 + 1 ; j++) {
+                    if (array[j][i].equals("O" + " ")) {
+                        result++;
+                    }
+                }
+            }
+        } else if (row1 == 1) {
+            for (int i = Math.min(col1, col2) - 1; i <= Math.max(col1, col2) + 1; i++) {
+                for (int j = 0; j <= row1; j++) {
+                    if (array[j][i].equals("O" + " ")) {
+                        result++;
+                    }
+                }
+            }
+        } else {
+            for (int i = Math.min(col1, col2) - 1; i <= Math.max(col1, col2) + 1 ; i++) {
+                for (int j = row1 - 1; j <= row1 + 1; j++) {
+                    if (array[j][i].equals("O" + " ")) {
+                        result++;
+                    }
+                }
+            }
+        }
+        return result == 0 ? false : true;
+    }
+    private static void typeOfShip() {
+        ShipArray shipArray = new ShipArray();
+        switch (shipType.getName()) {
+            case "Aircraft Carrier" -> shipArray.aircraft();
+            case "Battleship" -> shipArray.battleshipp();
+            case "Submarine" -> shipArray.submarine();
+            case "Cruiser" -> shipArray.cruiser();
+            default -> shipArray.destroyer();
+        }
+    }
+    enum ShipType {
+
+        AIRCRAFT_CARRIER("Aircraft Carrier", 5),
+        BATTLESHIP("Battleship", 4),
+        SUBMARINE("Submarine", 3),
+        CRUISER("Cruiser", 3),
+        DESTROYER("Destroyer", 2);
+
+        final String name;
+        final int size;
+
+        ShipType(String name, int size) {
+            this.name = name;
+            this.size = size;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public int getSize() {
+            return size;
+        }
+    }
+}
+
+
