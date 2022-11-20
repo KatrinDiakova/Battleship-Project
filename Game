@@ -1,0 +1,354 @@
+package battleship;
+
+import java.util.Scanner;
+
+public class Game {
+    private Scanner scanner = new Scanner(System.in);
+    private gameStatus status = gameStatus.START;
+    private gameShipType typeOfShip = gameShipType.AIRCRAFT_CARRIER;
+
+    enum gameStatus {
+        START, SHOT, OVER
+    }
+
+    enum gameShipType {
+        AIRCRAFT_CARRIER,
+        BATTLESHIP,
+        SUBMARINE,
+        CRUISER,
+        DESTROYER;
+    }
+
+    public void start() {
+        while (status != gameStatus.OVER) {
+            if (status == gameStatus.START) {
+                System.out.println("\nThe game starts!");
+                chooseField();
+                status = gameStatus.SHOT;
+            }
+            if (status == gameStatus.SHOT) {
+                if (Battleship.player == Battleship.Player.PLAYER1) {
+                    System.out.println("\nPlayer 1, it's your turn:");
+                    String shot = scanner.next();
+                    shotCheck(shot);
+                } else { // PLAYER2
+                    System.out.println("\nPlayer 2, it's your turn:");
+                    String shot = scanner.next();
+                    shotCheck(shot);
+                }
+
+            }
+        }
+    }
+
+    private void shotCheck(String shot) {
+        int x = (int) shot.charAt(0) - 64;
+        int y = Integer.parseInt(shot.substring(1));
+
+        if (x < 1 || x > 10 || y < 1 || y > 10) {
+            System.out.println("\nError! You entered the wrong coordinates! Try again:");
+            status = gameStatus.SHOT;
+            start();
+        } else if (Battleship.player == Battleship.Player.PLAYER1) {
+            shotCheckPlayer1(x, y);
+        } else if (Battleship.player == Battleship.Player.PLAYER2) {
+            shotCheckPlayer2(x, y);
+        }
+    }
+
+    private void shotCheckPlayer1(int x, int y) {
+        switch (Battleship.array[x][y]) {
+            case "X" + " " -> {
+                System.out.println("\nYou hit a ship!");
+                scanner.nextLine();
+                choosePlayer();
+                status = gameStatus.SHOT;
+                start();
+            }
+            case "M" + " " -> {
+                System.out.println("\nYou missed!");
+                scanner.nextLine();
+                choosePlayer();
+                status = gameStatus.SHOT;
+                start();
+            }
+            case "O" + " " -> {
+                Battleship.array[x][y] = "X" + " ";
+                addShipOnShipArrayPl1(x, y);
+                checkSankShip();
+            }
+            case "~" + " " -> {
+                Battleship.array[x][y] = "M" + " ";
+                System.out.println("\nYou missed!");
+                scanner.nextLine();
+                choosePlayer();
+                status = gameStatus.SHOT;
+                start();
+            }
+        }
+    }
+
+    private void shotCheckPlayer2(int x, int y) {
+        switch (Player1.arrayPl1[x][y]) {
+            case "X" + " " -> {
+                System.out.println("\nYou hit a ship!");
+                scanner.nextLine();
+                choosePlayer();
+                status = gameStatus.SHOT;
+                start();
+            }
+            case "M" + " " -> {
+                System.out.println("\nYou missed!");
+                scanner.nextLine();
+                choosePlayer();
+                status = gameStatus.SHOT;
+                start();
+            }
+            case "O" + " " -> {
+                Player1.arrayPl1[x][y] = "X" + " ";
+                addShipOnShipArrayPl2(x, y);
+                checkSankShip();
+            }
+            case "~" + " " -> {
+                Player1.arrayPl1[x][y] = "M" + " ";
+                System.out.println("\nYou missed!");
+                scanner.nextLine();
+                choosePlayer();
+                status = gameStatus.SHOT;
+                start();
+            }
+        }
+    }
+    private void choosePlayer() {
+        System.out.println("\nPress Enter and pass the move to another player");
+        scanner.nextLine();
+        if (Battleship.player == Battleship.Player.PLAYER1) {
+            Battleship.player = Battleship.Player.PLAYER2;
+        } else { // PLAYER2
+            Battleship.player = Battleship.Player.PLAYER1;
+        }
+        chooseField();
+    }
+
+    private void chooseField() {
+        if (Battleship.player == Battleship.Player.PLAYER1) {
+            Battleship.hide = true;
+            Battleship.printBattleship();
+            Battleship.hide = false;
+            Player1.printFieldPl1();
+        } else { // PLAYER2
+            Battleship.hide = true;
+            Player1.printFieldPl1();
+            Battleship.hide = false;
+            Battleship.printBattleship();
+        }
+    }
+
+    private void checkSankShip() {
+        if (sankShip()) {
+            checkAllSankShip();
+        } else {
+            System.out.println("\nYou hit a ship!");
+            scanner.nextLine();
+            choosePlayer();
+            status = gameStatus.SHOT;
+            start();
+        }
+    }
+
+    private boolean sankShip() {
+        if (Battleship.player == Battleship.Player.PLAYER1) {
+            return sankShipPlayer1();
+        } else {
+            return sankShipPlayer2();
+        }
+    }
+
+    private boolean sankShipPlayer1() {
+        int check = 0;
+        switch (typeOfShip) {
+            case AIRCRAFT_CARRIER -> {
+                for (int i = 0; i < ShipArray.aircraft.length; i++) {
+                    for (int j = 0; j < ShipArray.aircraft[i].length; j++) {
+                        if (ShipArray.aircraft[i][j].equals("X" + " ")) {
+                            check++;
+                        }
+                    }
+                }
+                return check == 5;
+            }
+            case BATTLESHIP -> {
+                for (int i = 0; i < ShipArray.battleshipp.length; i++) {
+                    for (int j = 0; j < ShipArray.battleshipp[i].length; j++) {
+                        if (ShipArray.battleshipp[i][j].equals("X" + " ")) {
+                            check++;
+                        }
+                    }
+                }
+                return check == 4;
+            }
+            case SUBMARINE -> {
+                for (int i = 0; i < ShipArray.submarine.length; i++) {
+                    for (int j = 0; j < ShipArray.submarine[i].length; j++) {
+                        if (ShipArray.submarine[i][j].equals("X" + " ")) {
+                            check++;
+                        }
+                    }
+                }
+                return check == 3;
+            }
+            case CRUISER -> {
+                for (int i = 0; i < ShipArray.cruiser.length; i++) {
+                    for (int j = 0; j < ShipArray.cruiser[i].length; j++) {
+                        if (ShipArray.cruiser[i][j].equals("X" + " ")) {
+                            check++;
+                        }
+                    }
+                }
+                return check == 3;
+            }
+            case DESTROYER -> {
+                for (int i = 0; i < ShipArray.destroyer.length; i++) {
+                    for (int j = 0; j < ShipArray.destroyer[i].length; j++) {
+                        if (ShipArray.destroyer[i][j].equals("X" + " ")) {
+                            check++;
+                        }
+                    }
+                }
+                return check == 2;
+            }
+        }
+        return sankShipPlayer1();
+    }
+
+    private boolean sankShipPlayer2() {
+        int check = 0;
+        switch (typeOfShip) {
+            case AIRCRAFT_CARRIER -> {
+                for (int i = 0; i < ShipArray.aircraftPl1.length; i++) {
+                    for (int j = 0; j < ShipArray.aircraftPl1[i].length; j++) {
+                        if (ShipArray.aircraftPl1[i][j].equals("X" + " ")) {
+                            check++;
+                        }
+                    }
+                }
+                return check == 5;
+            }
+            case BATTLESHIP -> {
+                for (int i = 0; i < ShipArray.battleshipPl1.length; i++) {
+                    for (int j = 0; j < ShipArray.battleshipPl1[i].length; j++) {
+                        if (ShipArray.battleshipPl1[i][j].equals("X" + " ")) {
+                            check++;
+                        }
+                    }
+                }
+                return check == 4;
+            }
+            case SUBMARINE -> {
+                for (int i = 0; i < ShipArray.submarinePl1.length; i++) {
+                    for (int j = 0; j < ShipArray.submarinePl1[i].length; j++) {
+                        if (ShipArray.submarinePl1[i][j].equals("X" + " ")) {
+                            check++;
+                        }
+                    }
+                }
+                return check == 3;
+            }
+            case CRUISER -> {
+                for (int i = 0; i < ShipArray.cruiserPl1.length; i++) {
+                    for (int j = 0; j < ShipArray.cruiserPl1[i].length; j++) {
+                        if (ShipArray.cruiserPl1[i][j].equals("X" + " ")) {
+                            check++;
+                        }
+                    }
+                }
+                return check == 3;
+            }
+            case DESTROYER -> {
+                for (int i = 0; i < ShipArray.destroyerPl1.length; i++) {
+                    for (int j = 0; j < ShipArray.destroyerPl1[i].length; j++) {
+                        if (ShipArray.destroyerPl1[i][j].equals("X" + " ")) {
+                            check++;
+                        }
+                    }
+                }
+                return check == 2;
+            }
+        }
+        return sankShipPlayer2();
+    }
+
+    private void checkAllSankShip() {
+        int countXPl1 = 0;
+        int countXPl2 = 0;
+        for (int i = 0; i < Player1.arrayPl1.length; i++) {
+            for (int j = 0; j < Player1.arrayPl1[i].length; j++) {
+                if (Player1.arrayPl1[i][j].equals("X" + " ")) {
+                    countXPl1++;
+                }
+            }
+        }
+        for (int i = 0; i < Battleship.array.length; i++) {
+            for (int j = 0; j < Battleship.array[i].length; j++) {
+                if (Battleship.array[i][j].equals("X" + " ")) {
+                    countXPl2++;
+                }
+            }
+        }
+        if (countXPl1 == 17) {
+            System.out.println("You sank the last ship. Player 2 won. Congratulations!");
+            status = gameStatus.OVER;
+            start();
+        } else if (countXPl2 == 17) {
+            System.out.println("You sank the last ship. Player 1 won. Congratulations!");
+            status = gameStatus.OVER;
+            start();
+        } else {
+            System.out.println("You sank a ship!");
+            scanner.nextLine();
+            status = gameStatus.SHOT;
+            choosePlayer();
+            start();
+        }
+    }
+
+    private void addShipOnShipArrayPl1(int x, int y) {
+        if (Battleship.player == Battleship.Player.PLAYER1) {
+            if (ShipArray.aircraft[x][y].equals("O" + " ")) {
+                ShipArray.aircraft[x][y] = "X" + " ";
+                typeOfShip = gameShipType.AIRCRAFT_CARRIER;
+            } else if (ShipArray.battleshipp[x][y].equals("O" + " ")) {
+                ShipArray.battleshipp[x][y] = "X" + " ";
+                typeOfShip = gameShipType.BATTLESHIP;
+            } else if (ShipArray.submarine[x][y].equals("O" + " ")) {
+                ShipArray.submarine[x][y] = "X" + " ";
+                typeOfShip = gameShipType.SUBMARINE;
+            } else if (ShipArray.cruiser[x][y].equals("O" + " ")) {
+                ShipArray.cruiser[x][y] = "X" + " ";
+                typeOfShip = gameShipType.CRUISER;
+            } else if (ShipArray.destroyer[x][y].equals("O" + " ")) {
+                ShipArray.destroyer[x][y] = "X" + " ";
+                typeOfShip = gameShipType.DESTROYER;
+            }
+        }
+    }
+    private void addShipOnShipArrayPl2(int x, int y) {
+        if (ShipArray.aircraftPl1[x][y].equals("O" + " ")) {
+            ShipArray.aircraftPl1[x][y] = "X" + " ";
+            typeOfShip = gameShipType.AIRCRAFT_CARRIER;
+        } else if (ShipArray.battleshipPl1[x][y].equals("O" + " ")) {
+            ShipArray.battleshipPl1[x][y] = "X" + " ";
+            typeOfShip = gameShipType.BATTLESHIP;
+        } else if (ShipArray.submarinePl1[x][y].equals("O" + " ")) {
+            ShipArray.submarinePl1[x][y] = "X" + " ";
+            typeOfShip = gameShipType.SUBMARINE;
+        } else if (ShipArray.cruiserPl1[x][y].equals("O" + " ")) {
+            ShipArray.cruiserPl1[x][y] = "X" + " ";
+            typeOfShip = gameShipType.CRUISER;
+        } else if (ShipArray.destroyerPl1[x][y].equals("O" + " ")) {
+            ShipArray.destroyerPl1[x][y] = "X" + " ";
+            typeOfShip = gameShipType.DESTROYER;
+        }
+    }
+}
+
